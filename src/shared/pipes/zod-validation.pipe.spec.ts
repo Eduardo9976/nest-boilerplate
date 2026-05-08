@@ -1,6 +1,6 @@
-import { BadRequestException } from '@nestjs/common';
 import { z } from 'zod';
 import { ZodValidationPipe } from './zod-validation.pipe';
+import { ValidationException } from '../exceptions/validation.exception';
 
 describe('ZodValidationPipe', () => {
   const schema = z.object({ email: z.string().email(), age: z.number().min(0) });
@@ -15,21 +15,19 @@ describe('ZodValidationPipe', () => {
     expect(result).toEqual({ email: 'a@b.com', age: 25 });
   });
 
-  it('throws BadRequestException on invalid input', () => {
-    expect(() => pipe.transform({ email: 'not-an-email', age: -1 })).toThrow(BadRequestException);
+  it('throws ValidationException on invalid input', () => {
+    expect(() => pipe.transform({ email: 'not-an-email', age: -1 })).toThrow(ValidationException);
   });
 
   it('includes field-level details in error', () => {
     try {
       pipe.transform({ email: 'bad', age: 0 });
     } catch (e) {
-      const body = (e as BadRequestException).getResponse() as {
-        details: Array<{ field: string; message: string }>;
-      };
-      expect(body.details).toBeDefined();
-      expect(body.details.length).toBeGreaterThan(0);
-      expect(body.details[0]).toHaveProperty('field');
-      expect(body.details[0]).toHaveProperty('message');
+      const err = e as ValidationException;
+      expect(err.details).toBeDefined();
+      expect(err.details.length).toBeGreaterThan(0);
+      expect(err.details[0]).toHaveProperty('field');
+      expect(err.details[0]).toHaveProperty('message');
     }
   });
 });

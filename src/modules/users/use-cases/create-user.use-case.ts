@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { IUserRepository, USER_REPOSITORY } from '../domain/user.repository';
+import { UserRepository, USER_REPOSITORY } from '../domain/user.repository';
 import type { User } from '../domain/user.entity';
 import { ConflictException } from '../../../shared/exceptions/conflict.exception';
 
@@ -13,7 +13,7 @@ export interface CreateUserInput {
 
 @Injectable()
 export class CreateUserUseCase {
-  constructor(@Inject(USER_REPOSITORY) private readonly repo: IUserRepository) {}
+  constructor(@Inject(USER_REPOSITORY) private readonly repo: UserRepository) {}
 
   async execute(input: CreateUserInput): Promise<User> {
     const email = input.email.toLowerCase().trim();

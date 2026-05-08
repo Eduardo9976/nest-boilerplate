@@ -1,5 +1,5 @@
 import { RefreshTokenUseCase } from './refresh-token.use-case';
-import type { JwtLoginUseCase } from './jwt-login.use-case';
+import type { TokenIssuerService } from './token-issuer.service';
 import { UnauthorizedException } from '../../../shared/exceptions/unauthorized.exception';
 
 describe('RefreshTokenUseCase', () => {
@@ -10,16 +10,19 @@ describe('RefreshTokenUseCase', () => {
     delete: jest.fn(),
     deleteAll: jest.fn(),
   };
-  const mockJwtLogin = { issueTokenPair: jest.fn() };
+  const mockTokenIssuer = { issueTokenPair: jest.fn() };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useCase = new RefreshTokenUseCase(mockTokenRepo, mockJwtLogin as unknown as JwtLoginUseCase);
+    useCase = new RefreshTokenUseCase(
+      mockTokenRepo,
+      mockTokenIssuer as unknown as TokenIssuerService,
+    );
   });
 
   it('returns new token pair and deletes old token when valid', async () => {
     mockTokenRepo.verify.mockResolvedValue(true);
-    mockJwtLogin.issueTokenPair.mockResolvedValue({
+    mockTokenIssuer.issueTokenPair.mockResolvedValue({
       accessToken: 'new-access',
       refreshToken: 'new-refresh',
     });

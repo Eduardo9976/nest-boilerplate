@@ -29,7 +29,14 @@ export class RedisTokenRepository implements IRedisTokenRepository {
   }
 
   async deleteAll(userId: string): Promise<void> {
-    const keys = await this.redis.keys(`refresh:${userId}:*`);
+    const pattern = `refresh:${userId}:*`;
+    const keys: string[] = [];
+    let cursor = '0';
+    do {
+      const [next, batch] = await this.redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+      cursor = next;
+      keys.push(...batch);
+    } while (cursor !== '0');
     if (keys.length > 0) await this.redis.del(...keys);
   }
 }

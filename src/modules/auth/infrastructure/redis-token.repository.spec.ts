@@ -7,7 +7,7 @@ describe('RedisTokenRepository', () => {
     set: jest.fn(),
     get: jest.fn(),
     del: jest.fn(),
-    keys: jest.fn(),
+    scan: jest.fn(),
   };
 
   beforeEach(() => {
@@ -37,15 +37,30 @@ describe('RedisTokenRepository', () => {
     expect(mockRedis.del).toHaveBeenCalledWith('refresh:user-1:token-1');
   });
 
-  it('deletes all tokens for a user', async () => {
-    mockRedis.keys.mockResolvedValue(['refresh:user-1:t1', 'refresh:user-1:t2']);
+  it('deletes all tokens for a user using SCAN', async () => {
+    mockRedis.scan
+      .mockResolvedValueOnce(['0', ['refresh:user-1:t1', 'refresh:user-1:t2']]);
+
     await repo.deleteAll('user-1');
+
+    expect(mockRedis.scan).toHaveBeenCalledWith('0', 'MATCH', 'refresh:user-1:*', 'COUNT', 100);
     expect(mockRedis.del).toHaveBeenCalledWith('refresh:user-1:t1', 'refresh:user-1:t2');
   });
 
   it('does nothing when no tokens exist for deleteAll', async () => {
-    mockRedis.keys.mockResolvedValue([]);
+    mockRedis.scan.mockResolvedValueOnce(['0', []]);
     await repo.deleteAll('user-1');
     expect(mockRedis.del).not.toHaveBeenCalled();
+  });
+
+  it('iterates multiple SCAN pages until cursor is 0', async () => {
+    mockRedis.scan
+      .mockResolvedValueOnce(['42', ['refresh:user-1:t1']])
+      .mockResolvedValueOnce(['0', ['refresh:user-1:t2']]);
+
+    await repo.deleteAll('user-1');
+
+    expect(mockRedis.scan).toHaveBeenCalledTimes(2);
+    expect(mockRedis.del).toHaveBeenCalledWith('refresh:user-1:t1', 'refresh:user-1:t2');
   });
 });

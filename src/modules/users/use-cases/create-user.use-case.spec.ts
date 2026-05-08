@@ -1,11 +1,11 @@
 import { CreateUserUseCase } from './create-user.use-case';
-import type { IUserRepository } from '../domain/user.repository';
+import type { UserRepository } from '../domain/user.repository';
 import type { User } from '../domain/user.entity';
 import { ConflictException } from '../../../shared/exceptions/conflict.exception';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;
-  let mockRepo: jest.Mocked<IUserRepository>;
+  let mockRepo: jest.Mocked<UserRepository>;
 
   const makeUser = (email: string): User => ({
     id: 'uuid-1',
@@ -35,7 +35,10 @@ describe('CreateUserUseCase', () => {
 
     expect(result.email).toBe('new@example.com');
     expect(mockRepo.create).toHaveBeenCalledWith(
-      expect.objectContaining({ email: 'new@example.com' }),
+      expect.objectContaining({
+        email: 'new@example.com',
+        passwordHash: expect.stringMatching(/^\$2[aby]\$/),
+      }),
     );
   });
 

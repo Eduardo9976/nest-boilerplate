@@ -7,6 +7,8 @@ import { GoogleAuthController } from './presentation/google-auth.controller';
 import { JwtLoginUseCase } from './use-cases/jwt-login.use-case';
 import { RefreshTokenUseCase } from './use-cases/refresh-token.use-case';
 import { GoogleLoginUseCase } from './use-cases/google-login.use-case';
+import { LogoutUseCase } from './use-cases/logout.use-case';
+import { TokenIssuerService } from './use-cases/token-issuer.service';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './infrastructure/strategies/jwt-refresh.strategy';
 import { GoogleStrategy } from './infrastructure/strategies/google.strategy';
@@ -22,8 +24,10 @@ const ENABLE_GOOGLE = process.env.ENABLE_GOOGLE_AUTH === 'true';
   imports: [UsersModule, PassportModule, JwtModule.register({})],
   controllers: ENABLE_GOOGLE ? [AuthController, GoogleAuthController] : [AuthController],
   providers: [
+    TokenIssuerService,
     JwtLoginUseCase,
     RefreshTokenUseCase,
+    LogoutUseCase,
     JwtStrategy,
     JwtRefreshStrategy,
     { provide: REDIS_TOKEN_REPOSITORY, useClass: RedisTokenRepository },

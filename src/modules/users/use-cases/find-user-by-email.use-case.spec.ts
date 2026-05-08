@@ -1,10 +1,10 @@
 import { FindUserByEmailUseCase } from './find-user-by-email.use-case';
-import type { IUserRepository } from '../domain/user.repository';
+import type { UserRepository } from '../domain/user.repository';
 import type { User } from '../domain/user.entity';
 
 describe('FindUserByEmailUseCase', () => {
   let useCase: FindUserByEmailUseCase;
-  let mockRepo: jest.Mocked<IUserRepository>;
+  let mockRepo: jest.Mocked<UserRepository>;
 
   beforeEach(() => {
     mockRepo = {

@@ -32,6 +32,24 @@ export class LoggingInterceptor implements NestInterceptor {
                   }) + '\n',
                 );
               },
+              error: (err: unknown) => {
+                const status =
+                  err instanceof Error && 'statusCode' in err
+                    ? (err as { statusCode: number }).statusCode
+                    : 500;
+                process.stdout.write(
+                  JSON.stringify({
+                    requestId,
+                    method: req.method,
+                    path: req.path,
+                    statusCode: status,
+                    duration: `${Date.now() - start}ms`,
+                    context: context.getClass().name,
+                    timestamp: new Date().toISOString(),
+                    error: err instanceof Error ? err.message : 'Unknown error',
+                  }) + '\n',
+                );
+              },
             }),
           )
           .subscribe(subscriber);

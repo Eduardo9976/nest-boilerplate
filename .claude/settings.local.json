@@ -47,7 +47,14 @@
       "PowerShell($env:PATH += \";C:\\\\Users\\\\eduardoc\\\\AppData\\\\Roaming\\\\npm;C:\\\\Program Files\\\\nodejs\"; cd \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\"; & npx jest --passWithNoTests 2>&1 | Select-Object -Last 60)",
       "PowerShell($env:PATH -split \";\" | Where-Object { $_ -match \"node|npm|pnpm\" })",
       "PowerShell(ls \"C:\\\\Users\\\\eduardoc\\\\AppData\\\\Roaming\\\\npm\" -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"pnpm\" } | Select-Object Name)",
-      "PowerShell(& \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\\\\node_modules\\\\.bin\\\\jest.cmd\" --passWithNoTests 2>&1 | Select-Object -Last 40)"
+      "PowerShell(& \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\\\\node_modules\\\\.bin\\\\jest.cmd\" --passWithNoTests 2>&1 | Select-Object -Last 40)",
+      "Bash(Get-ChildItem -Recurse -Depth 3)",
+      "Bash(Select-Object FullName, PSIsContainer)",
+      "Bash(ConvertTo-Json)",
+      "Bash(Remove-Item *)",
+      "PowerShell(git *)",
+      "Bash(git *)",
+      "PowerShell(pnpm *)"
     ]
   }
 }

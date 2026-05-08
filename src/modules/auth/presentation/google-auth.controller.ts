@@ -30,9 +30,7 @@ export class GoogleAuthController {
       },
     },
   })
-  googleAuth(): void {
-    // Passport redirects to Google — no body needed
-  }
+  googleAuth(): void {}
 
   @Public()
   @Get('google/callback')

@@ -1,14 +1,15 @@
 import { GoogleLoginUseCase } from './google-login.use-case';
-import type { JwtLoginUseCase } from './jwt-login.use-case';
+import type { TokenIssuerService } from './token-issuer.service';
 import type { FindUserByEmailUseCase } from '../../users/use-cases/find-user-by-email.use-case';
 import type { CreateUserUseCase } from '../../users/use-cases/create-user.use-case';
+import { ConflictException } from '../../../shared/exceptions/conflict.exception';
 import type { User } from '../../users/domain/user.entity';
 
 describe('GoogleLoginUseCase', () => {
   let useCase: GoogleLoginUseCase;
   const mockFindByEmail = { execute: jest.fn() };
   const mockCreateUser = { execute: jest.fn() };
-  const mockJwtLogin = { issueTokenPair: jest.fn() };
+  const mockTokenIssuer = { issueTokenPair: jest.fn() };
 
   const existingUser: User = {
     id: 'existing-id',
@@ -35,9 +36,9 @@ describe('GoogleLoginUseCase', () => {
     useCase = new GoogleLoginUseCase(
       mockFindByEmail as unknown as FindUserByEmailUseCase,
       mockCreateUser as unknown as CreateUserUseCase,
-      mockJwtLogin as unknown as JwtLoginUseCase,
+      mockTokenIssuer as unknown as TokenIssuerService,
     );
-    mockJwtLogin.issueTokenPair.mockResolvedValue({
+    mockTokenIssuer.issueTokenPair.mockResolvedValue({
       accessToken: 'at',
       refreshToken: 'rt',
     });
@@ -49,7 +50,7 @@ describe('GoogleLoginUseCase', () => {
     const result = await useCase.execute({ googleId: 'g-123', email: 'existing@example.com' });
 
     expect(mockCreateUser.execute).not.toHaveBeenCalled();
-    expect(mockJwtLogin.issueTokenPair).toHaveBeenCalledWith('existing-id');
+    expect(mockTokenIssuer.issueTokenPair).toHaveBeenCalledWith('existing-id');
     expect(result.accessToken).toBe('at');
   });
 
@@ -63,6 +64,19 @@ describe('GoogleLoginUseCase', () => {
       email: 'new@example.com',
       googleId: 'g-456',
     });
-    expect(mockJwtLogin.issueTokenPair).toHaveBeenCalledWith('new-id');
+    expect(mockTokenIssuer.issueTokenPair).toHaveBeenCalledWith('new-id');
+  });
+
+  it('handles TOCTOU race: retries findByEmail when create throws ConflictException', async () => {
+    mockFindByEmail.execute
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(existingUser);
+    mockCreateUser.execute.mockRejectedValue(new ConflictException('Email already in use'));
+
+    const result = await useCase.execute({ googleId: 'g-123', email: 'existing@example.com' });
+
+    expect(mockFindByEmail.execute).toHaveBeenCalledTimes(2);
+    expect(mockTokenIssuer.issueTokenPair).toHaveBeenCalledWith('existing-id');
+    expect(result.accessToken).toBe('at');
   });
 });

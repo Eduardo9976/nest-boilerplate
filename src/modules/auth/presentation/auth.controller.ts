@@ -6,7 +6,6 @@ import {
   HttpStatus,
   UseGuards,
   Request,
-  Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -20,10 +19,7 @@ import { Public } from '../../../shared/decorators/public.decorator';
 import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
 import { JwtLoginUseCase } from '../use-cases/jwt-login.use-case';
 import { RefreshTokenUseCase } from '../use-cases/refresh-token.use-case';
-import {
-  IRedisTokenRepository,
-  REDIS_TOKEN_REPOSITORY,
-} from '../infrastructure/redis-token.repository';
+import { LogoutUseCase } from '../use-cases/logout.use-case';
 import { LoginSchema, LoginDto } from './dtos/login.dto';
 import { TokenPairDto } from './dtos/token-pair.dto';
 import { ErrorResponseDto } from '../../../shared/dtos/error-response.dto';
@@ -34,8 +30,7 @@ export class AuthController {
   constructor(
     private readonly jwtLoginUseCase: JwtLoginUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
-    @Inject(REDIS_TOKEN_REPOSITORY)
-    private readonly tokenRepo: IRedisTokenRepository,
+    private readonly logoutUseCase: LogoutUseCase,
   ) {}
 
   @Public()
@@ -49,7 +44,7 @@ export class AuthController {
     },
   })
   @ApiResponse({ status: 200, description: 'Tokens gerados', type: TokenPairDto })
-  @ApiResponse({ status: 400, description: 'Dados inválidos', type: ErrorResponseDto })
+  @ApiResponse({ status: 422, description: 'Dados inválidos', type: ErrorResponseDto })
   @ApiResponse({ status: 401, description: 'Credenciais incorretas', type: ErrorResponseDto })
   login(@Body(new ZodValidationPipe(LoginSchema)) dto: LoginDto): Promise<TokenPairDto> {
     return this.jwtLoginUseCase.execute(dto.email, dto.password);
@@ -77,6 +72,6 @@ export class AuthController {
   @ApiResponse({ status: 204, description: 'Logout realizado com sucesso' })
   @ApiResponse({ status: 401, description: 'Não autenticado', type: ErrorResponseDto })
   async logout(@Request() req: { user: { userId: string } }): Promise<void> {
-    await this.tokenRepo.deleteAll(req.user.userId);
+    await this.logoutUseCase.execute(req.user.userId);
   }
 }

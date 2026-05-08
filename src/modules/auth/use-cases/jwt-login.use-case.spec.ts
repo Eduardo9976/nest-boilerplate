@@ -1,6 +1,5 @@
-import type { JwtService } from '@nestjs/jwt';
-import type { ConfigService } from '@nestjs/config';
 import { JwtLoginUseCase } from './jwt-login.use-case';
+import type { TokenIssuerService } from './token-issuer.service';
 import type { FindUserByEmailUseCase } from '../../users/use-cases/find-user-by-email.use-case';
 import { UnauthorizedException } from '../../../shared/exceptions/unauthorized.exception';
 import type { User } from '../../users/domain/user.entity';
@@ -9,24 +8,7 @@ describe('JwtLoginUseCase', () => {
   let useCase: JwtLoginUseCase;
   const mockFindByEmail = { execute: jest.fn() };
   const mockValidatePassword = { execute: jest.fn() };
-  const mockJwtService = { sign: jest.fn().mockReturnValue('signed-token') };
-  const mockTokenRepo = {
-    store: jest.fn(),
-    verify: jest.fn(),
-    delete: jest.fn(),
-    deleteAll: jest.fn(),
-  };
-  const mockConfigService = {
-    get: jest.fn((key: string) => {
-      const map: Record<string, string> = {
-        JWT_ACCESS_SECRET: 'access-secret',
-        JWT_ACCESS_EXPIRES_IN: '15m',
-        JWT_REFRESH_SECRET: 'refresh-secret',
-        JWT_REFRESH_EXPIRES_IN: '7d',
-      };
-      return map[key];
-    }),
-  };
+  const mockTokenIssuer = { issueTokenPair: jest.fn() };
 
   const user: User = {
     id: 'user-uuid',
@@ -43,25 +25,23 @@ describe('JwtLoginUseCase', () => {
     useCase = new JwtLoginUseCase(
       mockFindByEmail as unknown as FindUserByEmailUseCase,
       mockValidatePassword,
-      mockJwtService as unknown as JwtService,
-      mockTokenRepo,
-      mockConfigService as unknown as ConfigService,
+      mockTokenIssuer as unknown as TokenIssuerService,
     );
   });
 
   it('returns token pair on valid credentials', async () => {
     mockFindByEmail.execute.mockResolvedValue(user);
     mockValidatePassword.execute.mockResolvedValue(undefined);
+    mockTokenIssuer.issueTokenPair.mockResolvedValue({
+      accessToken: 'access-token',
+      refreshToken: 'refresh-token',
+    });
 
     const result = await useCase.execute('test@example.com', 'password');
 
-    expect(result.accessToken).toBe('signed-token');
-    expect(result.refreshToken).toBe('signed-token');
-    expect(mockTokenRepo.store).toHaveBeenCalledWith(
-      'user-uuid',
-      expect.any(String),
-      expect.any(Number),
-    );
+    expect(result.accessToken).toBe('access-token');
+    expect(result.refreshToken).toBe('refresh-token');
+    expect(mockTokenIssuer.issueTokenPair).toHaveBeenCalledWith('user-uuid');
   });
 
   it('throws UnauthorizedException when user not found', async () => {
@@ -70,5 +50,6 @@ describe('JwtLoginUseCase', () => {
     await expect(useCase.execute('nobody@example.com', 'pass')).rejects.toThrow(
       UnauthorizedException,
     );
+    expect(mockTokenIssuer.issueTokenPair).not.toHaveBeenCalled();
   });
 });
