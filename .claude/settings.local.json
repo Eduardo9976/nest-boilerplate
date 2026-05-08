@@ -38,7 +38,16 @@
       "Bash(node -e \"require\\('nestjs-zod'\\); console.log\\('ok'\\)\")",
       "Bash(npm info *)",
       "Bash(Get-ChildItem -Path \"src/modules\" -ErrorAction SilentlyContinue)",
-      "Bash(Select-Object -ExpandProperty Name)"
+      "Bash(Select-Object -ExpandProperty Name)",
+      "Bash(git checkout *)",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\\\\src\\\\modules\\\\users\\\\domain\\\\value-objects\")",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\\\\src\\\\modules\\\\users\\\\domain\\\\repositories\")",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\\\\src\\\\modules\\\\users\\\\application\")",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\\\\src\\\\modules\\\\auth\\\\application\")",
+      "PowerShell($env:PATH += \";C:\\\\Users\\\\eduardoc\\\\AppData\\\\Roaming\\\\npm;C:\\\\Program Files\\\\nodejs\"; cd \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\"; & npx jest --passWithNoTests 2>&1 | Select-Object -Last 60)",
+      "PowerShell($env:PATH -split \";\" | Where-Object { $_ -match \"node|npm|pnpm\" })",
+      "PowerShell(ls \"C:\\\\Users\\\\eduardoc\\\\AppData\\\\Roaming\\\\npm\" -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"pnpm\" } | Select-Object Name)",
+      "PowerShell(& \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\\\\node_modules\\\\.bin\\\\jest.cmd\" --passWithNoTests 2>&1 | Select-Object -Last 40)"
     ]
   }
 }

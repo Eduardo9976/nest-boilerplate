@@ -1,24 +1,22 @@
 import * as bcrypt from 'bcrypt';
 import { ValidatePasswordUseCase } from './validate-password.use-case';
-import { UnauthorizedException } from '../../../../shared/exceptions/unauthorized.exception';
-import { User } from '../../domain/user.entity';
-import { Email } from '../../domain/value-objects/email.vo';
-import { Password } from '../../domain/value-objects/password.vo';
+import { UnauthorizedException } from '../../../shared/exceptions/unauthorized.exception';
+import type { User } from '../domain/user.entity';
 
 describe('ValidatePasswordUseCase', () => {
   let useCase: ValidatePasswordUseCase;
 
   const makeUser = async (plain: string | null): Promise<User> => {
-    const hash = plain ? await bcrypt.hash(plain, 10) : null;
-    return User.create({
+    const passwordHash = plain ? await bcrypt.hash(plain, 10) : null;
+    return {
       id: 'uuid-1',
-      email: Email.create('test@example.com'),
-      password: hash ? Password.fromHash(hash) : null,
+      email: 'test@example.com',
+      passwordHash,
       googleId: null,
       role: 'USER',
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
+    };
   };
 
   beforeEach(() => {

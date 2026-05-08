@@ -1,7 +1,6 @@
 import { FindUserByEmailUseCase } from './find-user-by-email.use-case';
-import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
-import { User } from '../../domain/user.entity';
-import { Email } from '../../domain/value-objects/email.vo';
+import type { IUserRepository } from '../domain/user.repository';
+import type { User } from '../domain/user.entity';
 
 describe('FindUserByEmailUseCase', () => {
   let useCase: FindUserByEmailUseCase;
@@ -18,15 +17,15 @@ describe('FindUserByEmailUseCase', () => {
   });
 
   it('returns the user when found', async () => {
-    const user = User.create({
+    const user: User = {
       id: 'uuid-1',
-      email: Email.create('test@example.com'),
-      password: null,
+      email: 'test@example.com',
+      passwordHash: null,
       googleId: null,
       role: 'USER',
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
+    };
     mockRepo.findByEmail.mockResolvedValue(user);
 
     const result = await useCase.execute('test@example.com');

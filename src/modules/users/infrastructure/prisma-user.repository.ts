@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Role } from '@prisma/client';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service';
-import { CreateUserData, IUserRepository } from '../domain/repositories/user.repository.interface';
-import { User } from '../domain/user.entity';
-import { Email } from '../domain/value-objects/email.vo';
-import { Password } from '../domain/value-objects/password.vo';
+import type { IUserRepository } from '../domain/user.repository';
+import type { User, Role } from '../domain/user.entity';
+
+type PrismaUser = {
+  id: string;
+  email: string;
+  password: string | null;
+  googleId: string | null;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 @Injectable()
 export class PrismaUserRepository implements IUserRepository {
@@ -12,22 +19,20 @@ export class PrismaUserRepository implements IUserRepository {
 
   async findById(id: string): Promise<User | null> {
     const r = await this.prisma.user.findUnique({ where: { id } });
-    return r ? this.toDomain(r) : null;
+    return r ? this.toEntity(r) : null;
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const r = await this.prisma.user.findUnique({
-      where: { email },
-    });
-    return r ? this.toDomain(r) : null;
+    const r = await this.prisma.user.findUnique({ where: { email } });
+    return r ? this.toEntity(r) : null;
   }
 
   async findByGoogleId(googleId: string): Promise<User | null> {
     const r = await this.prisma.user.findUnique({ where: { googleId } });
-    return r ? this.toDomain(r) : null;
+    return r ? this.toEntity(r) : null;
   }
 
-  async create(data: CreateUserData): Promise<User> {
+  async create(data: Omit<User, 'createdAt' | 'updatedAt'>): Promise<User> {
     const r = await this.prisma.user.create({
       data: {
         id: data.id,
@@ -37,26 +42,11 @@ export class PrismaUserRepository implements IUserRepository {
         role: data.role,
       },
     });
-    return this.toDomain(r);
+    return this.toEntity(r);
   }
 
-  private toDomain(r: {
-    id: string;
-    email: string;
-    password: string | null;
-    googleId: string | null;
-    role: Role;
-    createdAt: Date;
-    updatedAt: Date;
-  }): User {
-    return User.create({
-      id: r.id,
-      email: Email.create(r.email),
-      password: r.password ? Password.fromHash(r.password) : null,
-      googleId: r.googleId,
-      role: r.role,
-      createdAt: r.createdAt,
-      updatedAt: r.updatedAt,
-    });
+  private toEntity(r: PrismaUser): User {
+    const { password, role, ...rest } = r;
+    return { ...rest, passwordHash: password, role: role as Role };
   }
 }

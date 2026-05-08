@@ -1,17 +1,17 @@
 # Architecture — poc-nest
 
-## Padrão: Clean Architecture por módulo (DDD-lite)
+## Padrão: Clean Architecture por módulo
 
 Cada módulo de feature é **completamente self-contained** com quatro sub-layers explícitas:
 
 ```
 src/modules/<feature>/
 ├── domain/           ← puro TypeScript, zero deps externas
-│   ├── user.entity.ts
-│   ├── value-objects/
-│   └── repositories/ ← interfaces (contratos)
-├── application/      ← orquestra domain, sem framework
-│   └── use-cases/
+│   ├── user.entity.ts       ← plain interface
+│   └── user.repository.ts   ← interface (contrato) + Symbol token
+├── use-cases/        ← orquestra domain, sem framework
+│   ├── *.use-case.ts
+│   └── *.use-case.spec.ts
 ├── infrastructure/   ← implementa interfaces do domain (Prisma, Redis, Passport)
 │   ├── strategies/
 │   └── *.repository.ts
@@ -20,13 +20,15 @@ src/modules/<feature>/
     └── dtos/
 ```
 
+**Sem value objects.** Validação de formato e regras simples ficam nos Zod schemas dos DTOs. Value objects só justificam custo se houver lógica de negócio complexa encapsulada — raro em projetos menores.
+
 ## Regras de dependência entre layers (ABSOLUTO)
 
 ```
-domain     ← nenhum import (puro TS, nunca importa NestJS, Prisma, Redis)
-application ← domain apenas (interfaces, entidades, VOs)
-infrastructure ← application + domain + externos (Prisma, Redis, ioredis, Passport)
-presentation ← application use-cases apenas
+domain         ← nenhum import (puro TS, nunca importa NestJS, Prisma, Redis)
+use-cases      ← domain apenas (interfaces, entidades)
+infrastructure ← domain + externos (Prisma, Redis, ioredis, Passport)
+presentation   ← use-cases apenas
 ```
 
 **A domain layer NUNCA importa de `@nestjs/common` nem de `@prisma/client`.**  
@@ -132,6 +134,6 @@ Formato padrão de resposta:
 |---|---|
 | **Prisma sobre TypeORM** | Schema-first, migrations explícitas, type safety no query level. TypeORM's `synchronize: true` causou perda de dados em prod. |
 | **Zod sobre class-validator** | class-validator exige classes e decorators nos DTOs, coupling com o type system. Zod schema é valor puro, `z.infer<>` garante tipo e validator sempre em sincronia. |
-| **DDD-lite (não full DDD)** | Sem aggregates, domain events, sagas. Só os benefícios estruturais: layers explícitas, repository abstraction, value objects. Times escalam para full DDD por módulo conforme complexidade cresce. |
+| **Clean Architecture (sem DDD-lite)** | Sem aggregates, domain events, sagas, value objects. Entidades são plain interfaces. Layers explícitas + repository abstraction sem ceremony de DDD. Escala bem para projetos de tamanho médio sem overhead. |
 | **Organização por feature, não por layer** | `modules/users/` > `domain/users/`. Quando um módulo cresce e vira microserviço, tudo que precisa já está numa pasta. |
 | **AsyncLocalStorage para requestId** | Passar requestId por toda assinatura polui interfaces. ALS = request-scoped context sem acoplamento. |

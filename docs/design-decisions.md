@@ -8,9 +8,11 @@ TypeORM's `synchronize: true` silently drops columns in production — a well-do
 
 `class-validator` requires DTOs to be classes with decorator annotations. This couples the shape of your data to how you validate it. Zod schemas are plain values — they can be composed, passed around, and tested independently. `z.infer<typeof Schema>` ensures the type and the validator are always in sync; there's no way to have a validated field that isn't in the type.
 
-## DDD-lite (not full DDD)
+## Clean Architecture (not DDD-lite)
 
-Full DDD (aggregates, domain events, sagas, bounded context maps) is the right choice for complex domains where business rules change frequently. This boilerplate uses DDD's structural benefits — explicit layers, repository abstraction, value objects — without the ceremony. The structure makes it easy for a team to escalate to full DDD per module as complexity demands.
+DDD's structural extras — rich entities with private constructors, value objects, domain events — pay off in large systems with complex, frequently-changing business rules. For a project at this scale, they add ceremony without tangible benefit: value objects duplicate validation already handled by Zod, and rich entities make simple CRUD operations unnecessarily verbose.
+
+This project uses Clean Architecture's core principles — explicit layer separation, dependency inversion via repository interfaces, use cases as the business rule boundary — without the DDD overhead. Entities are plain TypeScript interfaces. Validation lives in Zod schemas. The structure remains easy to escalate to DDD per module if a specific domain genuinely needs it.
 
 ## Per-module layers over global layer folders
 

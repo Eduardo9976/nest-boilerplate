@@ -1,11 +1,9 @@
 import type { JwtService } from '@nestjs/jwt';
 import type { ConfigService } from '@nestjs/config';
 import { JwtLoginUseCase } from './jwt-login.use-case';
-import type { FindUserByEmailUseCase } from '../../users/application/use-cases/find-user-by-email.use-case';
+import type { FindUserByEmailUseCase } from '../../users/use-cases/find-user-by-email.use-case';
 import { UnauthorizedException } from '../../../shared/exceptions/unauthorized.exception';
-import { User } from '../../users/domain/user.entity';
-import { Email } from '../../users/domain/value-objects/email.vo';
-import { Password } from '../../users/domain/value-objects/password.vo';
+import type { User } from '../../users/domain/user.entity';
 
 describe('JwtLoginUseCase', () => {
   let useCase: JwtLoginUseCase;
@@ -30,15 +28,15 @@ describe('JwtLoginUseCase', () => {
     }),
   };
 
-  const user = User.create({
+  const user: User = {
     id: 'user-uuid',
-    email: Email.create('test@example.com'),
-    password: Password.fromHash('hash'),
+    email: 'test@example.com',
+    passwordHash: 'hash',
     googleId: null,
     role: 'USER',
     createdAt: new Date(),
     updatedAt: new Date(),
-  });
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();

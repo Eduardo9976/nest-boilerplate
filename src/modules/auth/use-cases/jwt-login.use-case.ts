@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
-import { FindUserByEmailUseCase } from '../../users/application/use-cases/find-user-by-email.use-case';
-import { ValidatePasswordUseCase } from '../../users/application/use-cases/validate-password.use-case';
+import { FindUserByEmailUseCase } from '../../users/use-cases/find-user-by-email.use-case';
+import { ValidatePasswordUseCase } from '../../users/use-cases/validate-password.use-case';
 import {
   IRedisTokenRepository,
   REDIS_TOKEN_REPOSITORY,

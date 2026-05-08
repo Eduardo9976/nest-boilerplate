@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { FindUserByEmailUseCase } from '../../users/application/use-cases/find-user-by-email.use-case';
-import { CreateUserUseCase } from '../../users/application/use-cases/create-user.use-case';
+import { FindUserByEmailUseCase } from '../../users/use-cases/find-user-by-email.use-case';
+import { CreateUserUseCase } from '../../users/use-cases/create-user.use-case';
 import { JwtLoginUseCase, TokenPair } from './jwt-login.use-case';
 
 export interface GoogleProfile {

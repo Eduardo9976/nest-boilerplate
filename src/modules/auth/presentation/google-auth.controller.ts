@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { Public } from '../../../shared/decorators/public.decorator';
-import { GoogleLoginUseCase } from '../application/google-login.use-case';
+import { GoogleLoginUseCase } from '../use-cases/google-login.use-case';
 import { TokenPairDto } from './dtos/token-pair.dto';
 import { ErrorResponseDto } from '../../../shared/dtos/error-response.dto';
 

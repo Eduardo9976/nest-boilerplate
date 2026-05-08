@@ -2,7 +2,7 @@ import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { Public } from '../../../shared/decorators/public.decorator';
 import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
-import { CreateUserUseCase } from '../application/use-cases/create-user.use-case';
+import { CreateUserUseCase } from '../use-cases/create-user.use-case';
 import { CreateUserSchema, CreateUserDto } from './dtos/create-user.dto';
 import { UserResponseDto } from './dtos/user-response.dto';
 import { ErrorResponseDto } from '../../../shared/dtos/error-response.dto';
@@ -34,7 +34,7 @@ export class UsersController {
     });
     return {
       id: user.id,
-      email: user.email.toString(),
+      email: user.email,
       role: user.role,
       createdAt: user.createdAt.toISOString(),
     };

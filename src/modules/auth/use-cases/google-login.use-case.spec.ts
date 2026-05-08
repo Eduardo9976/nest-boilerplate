@@ -1,9 +1,8 @@
 import { GoogleLoginUseCase } from './google-login.use-case';
 import type { JwtLoginUseCase } from './jwt-login.use-case';
-import type { FindUserByEmailUseCase } from '../../users/application/use-cases/find-user-by-email.use-case';
-import type { CreateUserUseCase } from '../../users/application/use-cases/create-user.use-case';
-import { User } from '../../users/domain/user.entity';
-import { Email } from '../../users/domain/value-objects/email.vo';
+import type { FindUserByEmailUseCase } from '../../users/use-cases/find-user-by-email.use-case';
+import type { CreateUserUseCase } from '../../users/use-cases/create-user.use-case';
+import type { User } from '../../users/domain/user.entity';
 
 describe('GoogleLoginUseCase', () => {
   let useCase: GoogleLoginUseCase;
@@ -11,25 +10,25 @@ describe('GoogleLoginUseCase', () => {
   const mockCreateUser = { execute: jest.fn() };
   const mockJwtLogin = { issueTokenPair: jest.fn() };
 
-  const existingUser = User.create({
+  const existingUser: User = {
     id: 'existing-id',
-    email: Email.create('existing@example.com'),
-    password: null,
+    email: 'existing@example.com',
+    passwordHash: null,
     googleId: 'g-123',
     role: 'USER',
     createdAt: new Date(),
     updatedAt: new Date(),
-  });
+  };
 
-  const newUser = User.create({
+  const newUser: User = {
     id: 'new-id',
-    email: Email.create('new@example.com'),
-    password: null,
+    email: 'new@example.com',
+    passwordHash: null,
     googleId: 'g-456',
     role: 'USER',
     createdAt: new Date(),
     updatedAt: new Date(),
-  });
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();

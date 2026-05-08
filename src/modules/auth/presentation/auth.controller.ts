@@ -18,8 +18,8 @@ import {
 } from '@nestjs/swagger';
 import { Public } from '../../../shared/decorators/public.decorator';
 import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
-import { JwtLoginUseCase } from '../application/jwt-login.use-case';
-import { RefreshTokenUseCase } from '../application/refresh-token.use-case';
+import { JwtLoginUseCase } from '../use-cases/jwt-login.use-case';
+import { RefreshTokenUseCase } from '../use-cases/refresh-token.use-case';
 import {
   IRedisTokenRepository,
   REDIS_TOKEN_REPOSITORY,
