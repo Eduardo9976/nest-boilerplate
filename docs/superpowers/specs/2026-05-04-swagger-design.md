@@ -64,7 +64,7 @@ export const LoginSchema = z.object({
 export class LoginDto extends createZodDto(LoginSchema) {}
 ```
 
-### `src/modules/users/presentation/dtos/create-user.dto.ts`
+### `src/modules/users/presentation/dtos/create-service.dto.ts`
 
 Mesma mudança: type → classe.
 
@@ -77,7 +77,7 @@ export const CreateUserSchema = z.object({
   password: z.string().min(8).describe('Senha com mínimo de 8 caracteres'),
 });
 
-export class CreateUserDto extends createZodDto(CreateUserSchema) {}
+export class CreateServiceDto extends createZodDto(CreateUserSchema) {}
 ```
 
 ### `src/modules/auth/presentation/dtos/token-pair.dto.ts` *(novo)*
@@ -94,7 +94,7 @@ export const TokenPairSchema = z.object({
 export class TokenPairDto extends createZodDto(TokenPairSchema) {}
 ```
 
-### `src/modules/users/presentation/dtos/user-response.dto.ts` *(novo)*
+### `src/modules/users/presentation/dtos/service-response.dto.ts` *(novo)*
 
 ```ts
 import { z } from 'zod';
@@ -107,7 +107,7 @@ export const UserResponseSchema = z.object({
   createdAt: z.string().datetime().describe('Data de criação da conta'),
 });
 
-export class UserResponseDto extends createZodDto(UserResponseSchema) {}
+export class ServiceResponseDto extends createZodDto(UserResponseSchema) {}
 ```
 
 ### `src/shared/dtos/error-response.dto.ts` *(novo)*
@@ -206,12 +206,12 @@ O `@ApiBearerAuth()` existente precisa receber o nome `'access-token'` para corr
 ```ts
 @ApiOperation({ summary: 'Criar novo usuário' })
 @ApiBody({
-  type: CreateUserDto,
+  type: CreateServiceDto,
   examples: {
     valido: { value: { email: 'novo@example.com', password: 'senha1234' } },
   },
 })
-@ApiResponse({ status: 201, description: 'Usuário criado', type: UserResponseDto })
+@ApiResponse({ status: 201, description: 'Usuário criado', type: ServiceResponseDto })
 @ApiResponse({ status: 400, description: 'Dados inválidos', type: ErrorResponseDto })
 @ApiResponse({ status: 409, description: 'E-mail já cadastrado', type: ErrorResponseDto })
 ```
@@ -231,10 +231,10 @@ O `@ApiBearerAuth()` existente precisa receber o nome `'access-token'` para corr
 |---|---|
 | `src/main.ts` | Modificado |
 | `src/modules/auth/presentation/dtos/login.dto.ts` | Modificado |
-| `src/modules/users/presentation/dtos/create-user.dto.ts` | Modificado |
+| `src/modules/users/presentation/dtos/create-service.dto.ts` | Modificado |
 | `src/modules/auth/presentation/dtos/token-pair.dto.ts` | Criado |
-| `src/modules/users/presentation/dtos/user-response.dto.ts` | Criado |
+| `src/modules/users/presentation/dtos/service-response.dto.ts` | Criado |
 | `src/shared/dtos/error-response.dto.ts` | Criado |
 | `src/modules/auth/presentation/auth.controller.ts` | Modificado |
 | `src/modules/auth/presentation/google-auth.controller.ts` | Modificado |
-| `src/modules/users/presentation/users.controller.ts` | Modificado |
+| `src/modules/users/presentation/services.controller.ts` | Modificado |

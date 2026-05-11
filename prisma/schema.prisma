@@ -16,6 +16,19 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Service {
+  id                String   @id @default(uuid())
+  name              String   @unique
+  description       String?
+  durationInMinutes Int
+  price             Float
+  isActive          Boolean  @default(true)
+  category          String
+  imageUrl          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
 enum Role {
   USER
   ADMIN

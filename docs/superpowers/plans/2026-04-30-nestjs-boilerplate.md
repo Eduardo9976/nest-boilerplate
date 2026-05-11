@@ -77,10 +77,10 @@ poc-nest/
 │       │   │   ├── validate-password.use-case.ts
 │       │   │   └── validate-password.use-case.spec.ts
 │       │   ├── infrastructure/
-│       │   │   └── prisma-user.repository.ts
+│       │   │   └── prisma-service.repository.ts
 │       │   ├── presentation/
-│       │   │   ├── users.controller.ts
-│       │   │   └── dtos/create-user.dto.ts
+│       │   │   ├── services.controller.ts
+│       │   │   └── dtos/create-service.dto.ts
 │       │   └── users.module.ts
 │       └── auth/
 │           ├── application/
@@ -1377,11 +1377,11 @@ Expected: PASS — 3 tests passing.
 
 ---
 
-## Task 14: PrismaUserRepository + UsersModule
+## Task 14: PrismaServiceRepository + UsersModule
 
-**Files:** `prisma-user.repository.ts`, `users.controller.ts`, `create-user.dto.ts`, `users.module.ts`
+**Files:** `prisma-service.repository.ts`, `services.controller.ts`, `create-service.dto.ts`, `users.module.ts`
 
-- [ ] **Step 1: Create `src/modules/users/infrastructure/prisma-user.repository.ts`**
+- [ ] **Step 1: Create `src/modules/users/infrastructure/prisma-service.repository.ts`**
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -1395,7 +1395,7 @@ import { Email } from '../domain/value-objects/email.vo';
 import { Password } from '../domain/value-objects/password.vo';
 
 @Injectable()
-export class PrismaUserRepository implements IUserRepository {
+export class PrismaServiceRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findById(id: string): Promise<User | null> {
@@ -1452,7 +1452,7 @@ export class PrismaUserRepository implements IUserRepository {
 
 - [ ] **Step 2: Create DTO and controller**
 
-`src/modules/users/presentation/dtos/create-user.dto.ts`:
+`src/modules/users/presentation/dtos/create-service.dto.ts`:
 ```typescript
 import { z } from 'zod';
 
@@ -1461,27 +1461,27 @@ export const CreateUserSchema = z.object({
   password: z.string().min(8),
 });
 
-export type CreateUserDto = z.infer<typeof CreateUserSchema>;
+export type CreateServiceDto = z.infer<typeof CreateUserSchema>;
 ```
 
-`src/modules/users/presentation/users.controller.ts`:
+`src/modules/users/presentation/services.controller.ts`:
 ```typescript
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from '../../../shared/decorators/public.decorator';
 import { ZodValidationPipe } from '../../../shared/pipes/zod-validation.pipe';
 import { CreateUserUseCase } from '../application/use-cases/create-user.use-case';
-import { CreateUserSchema, CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserSchema, CreateServiceDto } from './dtos/create-user.dto';
 
 @ApiTags('users')
 @Controller('users')
-export class UsersController {
+export class ServicesController {
   constructor(private readonly createUser: CreateUserUseCase) {}
 
   @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body(new ZodValidationPipe(CreateUserSchema)) dto: CreateUserDto) {
+  async create(@Body(new ZodValidationPipe(CreateUserSchema)) dto: CreateServiceDto) {
     const user = await this.createUser.execute({
       email: dto.email,
       password: dto.password,
@@ -1503,17 +1503,17 @@ import { Module } from '@nestjs/common';
 import { CreateUserUseCase } from './application/use-cases/create-user.use-case';
 import { FindUserByEmailUseCase } from './application/use-cases/find-user-by-email.use-case';
 import { ValidatePasswordUseCase } from './application/use-cases/validate-password.use-case';
-import { PrismaUserRepository } from './infrastructure/prisma-user.repository';
-import { UsersController } from './presentation/users.controller';
+import { PrismaServiceRepository } from './infrastructure/prisma-user.repository';
+import { ServicesController } from './presentation/users.controller';
 import { USER_REPOSITORY } from './domain/repositories/user.repository.interface';
 
 @Module({
-  controllers: [UsersController],
+  controllers: [ServicesController],
   providers: [
     CreateUserUseCase,
     FindUserByEmailUseCase,
     ValidatePasswordUseCase,
-    { provide: USER_REPOSITORY, useClass: PrismaUserRepository },
+    { provide: USER_REPOSITORY, useClass: PrismaServiceRepository },
   ],
   exports: [CreateUserUseCase, FindUserByEmailUseCase, ValidatePasswordUseCase],
 })
@@ -2671,7 +2671,7 @@ Every HTTP request passes through this pipeline in order:
 6. **`ZodValidationPipe`** (per parameter) — validates and parses `@Body`, `@Query`, or `@Param`. Throws 400 with field-level details on failure.
 7. **Controller method** — delegates immediately to a use case. No business logic here.
 8. **Use case** — orchestrates domain logic. Calls repository interfaces, value objects, domain exceptions.
-9. **Repository** (`PrismaUserRepository` / `RedisTokenRepository`) — translates domain calls to DB/cache queries. Converts Prisma records to domain entities.
+9. **Repository** (`PrismaServiceRepository` / `RedisTokenRepository`) — translates domain calls to DB/cache queries. Converts Prisma records to domain entities.
 10. **Domain entity / value object** — pure TypeScript, no framework knowledge.
 11. **Response flows back** — use case returns result, controller maps to plain response object (no passwords, no internal IDs unless needed), interceptor logs duration, response sent.
 

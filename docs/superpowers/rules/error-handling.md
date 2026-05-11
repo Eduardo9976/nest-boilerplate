@@ -74,7 +74,7 @@ Formato padrão de resposta:
 
 ```typescript
 // Uso nos controllers
-@Body(new ZodValidationPipe(CreateUserSchema)) dto: CreateUserDto
+@Body(new ZodValidationPipe(CreateUserSchema)) dto: CreateServiceDto
 @Query(new ZodValidationPipe(PaginationSchema)) query: PaginationDto
 @Param(new ZodValidationPipe(IdSchema)) params: IdDto
 ```

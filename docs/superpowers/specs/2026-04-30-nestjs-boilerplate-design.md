@@ -80,11 +80,11 @@ src/
 │   │   │       ├── find-user-by-email.use-case.ts
 │   │   │       └── validate-password.use-case.ts
 │   │   ├── infrastructure/
-│   │   │   └── prisma-user.repository.ts
+│   │   │   └── prisma-service.repository.ts
 │   │   ├── presentation/
-│   │   │   ├── users.controller.ts
+│   │   │   ├── services.controller.ts
 │   │   │   └── dtos/
-│   │   │       └── create-user.dto.ts
+│   │   │       └── create-service.dto.ts
 │   │   └── users.module.ts
 │   │
 │   └── auth/

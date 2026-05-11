@@ -50,7 +50,7 @@ export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
 export interface IUserRepository { ... }
 
 // binding no module
-{ provide: USER_REPOSITORY, useClass: PrismaUserRepository }
+{ provide: USER_REPOSITORY, useClass: PrismaServiceRepository }
 
 // uso no use case
 constructor(@Inject(USER_REPOSITORY) private readonly repo: IUserRepository) {}

@@ -45,7 +45,7 @@ src/
 | `use-cases/create-user.use-case.ts` | Creates user, bcrypt-hashes password |
 | `use-cases/find-user-by-email.use-case.ts` | Delegates to repository |
 | `use-cases/validate-password.use-case.ts` | bcrypt compare, rejects social-only accounts |
-| `infrastructure/prisma-user.repository.ts` | Implements `UserRepository` via Prisma |
+| `infrastructure/prisma-service.repository.ts` | Implements `UserRepository` via Prisma |
 
 ## Naming
 
@@ -54,8 +54,8 @@ src/
 | Classes | PascalCase | `CreateUserUseCase` |
 | Files | kebab-case | `create-user.use-case.ts` |
 | Interfaces | PascalCase, **no `I` prefix** | `UserRepository` |
-| Implementations | infra-prefix + interface name | `PrismaUserRepository` |
-| DTOs | PascalCase + `Dto` suffix | `CreateUserDto` |
+| Implementations | infra-prefix + interface name | `PrismaServiceRepository` |
+| DTOs | PascalCase + `Dto` suffix | `CreateServiceDto` |
 | Enums | PascalCase, members SCREAMING_SNAKE | `UserRole.ADMIN` |
 | Constants | SCREAMING_SNAKE | `MAX_REFRESH_TOKENS` |
 | Boolean vars | is/has/can prefix | `isExpired`, `hasRole` |
