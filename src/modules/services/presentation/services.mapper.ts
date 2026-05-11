@@ -11,7 +11,7 @@ export class ServicesMapper {
       price: service.price,
       isActive: service.isActive,
       imageUrl: service.imageUrl,
-      category: service.category,
+      categoryId: service.categoryId,
       createdAt: service.createdAt.toISOString(),
       updatedAt: service.updatedAt.toISOString(),
     } as ServiceResponseDto;

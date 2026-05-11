@@ -8,7 +8,7 @@ export const CreateServiceSchema = z.object({
   price: z.coerce.number().positive().describe('Preço do serviço'),
   isActive: z.boolean().default(true),
   imageUrl: z.string().min(8).max(100).optional().describe('Url da imagem'),
-  category: z.string().describe('Categoria ex: cabelo, barba, acabamento'), // transformar em enum
+  categoryId: z.string().uuid().describe('ID da categoria'),
 });
 
 export class CreateServiceDto extends createZodDto(CreateServiceSchema) {}

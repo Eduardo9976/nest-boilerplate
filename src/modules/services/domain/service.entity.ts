@@ -6,7 +6,7 @@ export interface Service {
     durationInMinutes: number;
     price: number;
     isActive: boolean;
-    category: string;
+    categoryId: string;
     imageUrl?: string;
     createdAt: Date;
     updatedAt: Date;

@@ -12,7 +12,7 @@ describe('FindOneServiceUseCase', () => {
     durationInMinutes: 30,
     price: 50,
     isActive: true,
-    category: 'cabelo',
+    categoryId: 'cat-uuid-1',
     createdAt: new Date(),
     updatedAt: new Date(),
   });

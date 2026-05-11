@@ -10,7 +10,7 @@ export type FindByServiceFilters = Partial<Pick<Service, 'id' | 'name' | 'isActi
 
 export type ServiceData = Pick<
   Service,
-  'name' | 'description' | 'durationInMinutes' | 'price' | 'isActive' | 'imageUrl' | 'category'
+  'name' | 'description' | 'durationInMinutes' | 'price' | 'isActive' | 'imageUrl' | 'categoryId'
 >;
 
 export type UpdateServiceRepositoryInput = Partial<ServiceData> & { id: ServiceId };

@@ -7,9 +7,10 @@ import {UsersModule} from './modules/users/users.module';
 import {AuthModule} from './modules/auth/auth.module';
 import {JwtAuthGuard} from './shared/guards/jwt-auth.guard';
 import {ServicesModule} from "./modules/services/services.module";
+import {CategoriesModule} from "./modules/categories/categories.module";
 
 @Module({
-    imports: [AppConfigModule, PrismaModule, RedisModule, UsersModule, AuthModule, ServicesModule],
+    imports: [AppConfigModule, PrismaModule, RedisModule, UsersModule, AuthModule, CategoriesModule, ServicesModule],
     providers: [
         {
             provide: APP_GUARD,

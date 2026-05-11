@@ -16,17 +16,30 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  services    Service[]
+}
+
 model Service {
-  id                String   @id @default(uuid())
-  name              String   @unique
+  id                String    @id @default(uuid())
+  name              String    @unique
   description       String?
   durationInMinutes Int
   price             Float
-  isActive          Boolean  @default(true)
-  category          String
+  isActive          Boolean   @default(true)
+  categoryId        String
+  category          Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   imageUrl          String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([categoryId])
 }
 
 enum Role {

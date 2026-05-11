@@ -36,7 +36,7 @@ export class ServicesController {
                     description: 'corte de cabelo',
                     durationInMinutes: 30,
                     price: 50.00,
-                    category: 'cabelo'
+                    categoryId: '00000000-0000-0000-0000-000000000001'
                 }
             },
         },
@@ -52,7 +52,7 @@ export class ServicesController {
             description: dto.description,
             durationInMinutes: dto.durationInMinutes,
             price: dto.price,
-            category: dto.category,
+            categoryId: dto.categoryId,
             isActive: dto.isActive,
             imageUrl: dto.imageUrl
         });

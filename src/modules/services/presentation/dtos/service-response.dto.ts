@@ -9,7 +9,7 @@ export const ServiceResponseSchema = z.object({
   price: z.coerce.number().positive().describe('Preço do serviço'),
   isActive: z.boolean().default(true),
   imageUrl: z.string().optional().describe('Url da imagem'),
-  category: z.string().describe('Categoria ex: cabelo, barba, acabamento'),
+  categoryId: z.string().uuid().describe('ID da categoria'),
   createdAt: z.string().datetime().describe('Data de criação em ISO 8601'),
   updatedAt: z.string().datetime().describe('Data de atualização em ISO 8601'),
 });
