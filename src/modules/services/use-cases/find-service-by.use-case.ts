@@ -6,7 +6,7 @@ import {Service} from "../domain/service.entity";
 export class FindServiceByUseCase {
   constructor(@Inject(SERVICE_REPOSITORY) private readonly serviceRepository: ServiceRepository) {}
 
-  execute(filter: FindByServiceFilters): Promise<Service[] | null> {
+  execute(filter: FindByServiceFilters): Promise<Service[]> {
     return this.serviceRepository.findBy(filter);
   }
 }

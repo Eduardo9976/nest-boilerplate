@@ -83,6 +83,6 @@ export class ServicesController {
         @Query(new ZodValidationPipe(FindServiceSchema)) query: FindServiceDto,
     ): Promise<ServiceResponseDto[]> {
         const services = await this.findServiceBy.execute(query);
-        return services ? ServicesMapper.toResponseList(services) : [];
+        return ServicesMapper.toResponseList(services);
     }
 }

@@ -54,7 +54,10 @@
       "Bash(Remove-Item *)",
       "PowerShell(git *)",
       "Bash(git *)",
-      "PowerShell(pnpm *)"
+      "PowerShell(pnpm *)",
+      "PowerShell(pnpm tsc *)",
+      "Bash(Select-String -Path \"C:\\\\Users\\\\eduardoc\\\\Documents\\\\repositories\\\\poc-nest\\\\src\\\\modules\\\\services\\\\use-cases\\\\find-one-service.use-case.ts\" -Pattern \"execute\")",
+      "Bash(Select-Object -First 5)"
     ]
   }
 }
